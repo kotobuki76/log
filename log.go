@@ -17,6 +17,14 @@ var logLevelName = map[int64]string{
 	4: "CRITICAL",
 }
 
+var logLevelNameIndent = map[int64]string{
+	0: "DEBUG   ",
+	1: "INFO    ",
+	2: "WARNING ",
+	3: "ERROR   ",
+	4: "CRITICAL",
+}
+
 const (
 	LOG_LEVEL_DEBUG    int64 = 0
 	LOG_LEVEL_INFO     int64 = 1
@@ -75,7 +83,7 @@ func logf(level int64, format string, args ...interface{}) {
 
 	s := fmt.Sprintf(format, args...)
 	s = strings.TrimRight(s, "\n")
-	s = os.Getenv("PROCESS_ID") + " " + logLevelName[level] + ": \t" + funcname + "() " + s
+	s = os.Getenv("PROCESS_ID") + " " + logLevelNameIndent[level] + ":" + funcname + "() " + s
 
 	logPrint(s)
 }
