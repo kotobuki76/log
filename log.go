@@ -75,7 +75,7 @@ func logf(level int64, format string, args ...interface{}) {
 
 	s := fmt.Sprintf(format, args...)
 	s = strings.TrimRight(s, "\n")
-	s = os.Getenv("PROCESS_ID") + " " + logLevelName[level] + ": \t" + funcname + "() \t" + s
+	s = os.Getenv("PROCESS_ID") + " " + logLevelName[level] + ": \t" + funcname + "() " + s
 
 	logPrint(s)
 }
