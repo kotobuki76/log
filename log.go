@@ -70,10 +70,12 @@ func logf(level int64, format string, args ...interface{}) {
 
 	pc, _, _, _ := runtime.Caller(2)
 	f := runtime.FuncForPC(pc)
+	fullname := f.Name()
+	funcname := strings.Split(fullname, ".")[len(strings.Split(fullname, "."))-1]
 
 	s := fmt.Sprintf(format, args...)
 	s = strings.TrimRight(s, "\n")
-	s = os.Getenv("PROCESS_ID") + " " + logLevelName[level] + ": \t" + f.Name() + "() \t" + s
+	s = os.Getenv("PROCESS_ID") + " " + logLevelName[level] + ": \t" + funcname + "() \t" + s
 
 	logPrint(s)
 }
