@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"runtime"
 	"strings"
 )
 
@@ -66,11 +67,17 @@ func Criticalf(format string, args ...interface{}) {
 }
 
 func logf(level int64, format string, args ...interface{}) {
-	logPrint(level, format, args...)
-}
 
-func logPrint(level int64, format string, args ...interface{}) {
+	pc, _, _, _ := runtime.Caller(2)
+	f := runtime.FuncForPC(pc)
+
 	s := fmt.Sprintf(format, args...)
 	s = strings.TrimRight(s, "\n")
-	log.Print(os.Getenv("PROCESS_ID") + " " + logLevelName[level] + ": " + s)
+	s = os.Getenv("PROCESS_ID") + " " + logLevelName[level] + ": \t" + f.Name() + "() \t" + s
+
+	logPrint(s)
+}
+
+func logPrint(s string) {
+	log.Print(s)
 }
