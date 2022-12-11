@@ -16,61 +16,61 @@ var logLevelName = map[int64]string{
 	4: "CRITICAL",
 }
 
-var LogContext context.Context
+const (
+	LOG_LEVEL_DEBUG    int64 = 0
+	LOG_LEVEL_INFO     int64 = 1
+	LOG_LEVEL_WARNING  int64 = 2
+	LOG_LEVEL_ERROR    int64 = 3
+	LOG_LEVEL_CRITICAL int64 = 4
+)
+
+var logContext context.Context
+var outputLevel int64 = LOG_LEVEL_DEBUG
 
 func SetContext(ctx context.Context) {
-	LogContext = ctx
+	logContext = ctx
 }
 
-func Debugf(ctx context.Context, format string, args ...interface{}) {
-	Logf(0, format, args...)
+func SetOutputLevel(i int64) {
+	outputLevel = i
 }
 
-// Infof is like Debugf, but at Info level.
-func Infof(ctx context.Context, format string, args ...interface{}) {
-	Logf(1, format, args...)
+func Debugf(format string, args ...interface{}) {
+	if outputLevel <= LOG_LEVEL_DEBUG {
+		logf(LOG_LEVEL_DEBUG, format, args...)
+	}
 }
 
-func InfofNoCtx(format string, args ...interface{}) {
-	//fmt.Println("InfofNoCtx")
-	Infof(nil, format, args...)
-	//s := fmt.Sprintf(format, args...)
-	//fmt.Println(os.Getenv("PROCESS_ID") + " " + logLevelName[1] + ": " + s)
+func Infof(format string, args ...interface{}) {
+	if outputLevel <= LOG_LEVEL_INFO {
+		logf(LOG_LEVEL_INFO, format, args...)
+	}
 }
 
-// Warningf is like Debugf, but at Warning level.
-func Warningf(ctx context.Context, format string, args ...interface{}) {
-	Logf(2, format, args...)
+func Warningf(format string, args ...interface{}) {
+	if outputLevel <= LOG_LEVEL_WARNING {
+		logf(LOG_LEVEL_WARNING, format, args...)
+	}
 }
 
-// Errorf is like Debugf, but at Error level.
-func Errorf(ctx context.Context, format string, args ...interface{}) {
-	Logf(3, format, args...)
+func Errorf(format string, args ...interface{}) {
+	if outputLevel <= LOG_LEVEL_ERROR {
+		logf(LOG_LEVEL_ERROR, format, args...)
+	}
 }
 
-// Criticalf is like Debugf, but at Critical level.
-func Criticalf(ctx context.Context, format string, args ...interface{}) {
-	Logf(4, format, args...)
+func Criticalf(format string, args ...interface{}) {
+	if outputLevel <= LOG_LEVEL_CRITICAL {
+		logf(LOG_LEVEL_CRITICAL, format, args...)
+	}
 }
 
-func Logf(level int64, format string, args ...interface{}) {
-	LogFile(level, format, args...)
+func logf(level int64, format string, args ...interface{}) {
+	logPrint(level, format, args...)
 }
 
-func LogFile(level int64, format string, args ...interface{}) {
+func logPrint(level int64, format string, args ...interface{}) {
 	s := fmt.Sprintf(format, args...)
 	s = strings.TrimRight(s, "\n")
 	log.Print(os.Getenv("PROCESS_ID") + " " + logLevelName[level] + ": " + s)
-}
-
-func WriteFile(format string) {
-	f, err := os.OpenFile("./log.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
-
-	if err != nil {
-		fmt.Printf("error opening file: %v", err)
-		os.Exit(1)
-	}
-	defer f.Close()
-	log.SetOutput(f)
-	log.Println(format)
 }
