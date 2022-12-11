@@ -67,5 +67,6 @@ func TestLogfWithDepth(t *testing.T) {
 	a := "string"
 	i := 1
 	SetOutputLevel(LOG_LEVEL_DEBUG)
+	LogfWithDepth(LOG_LEVEL_DEBUG, 1, "%v,%v", a, i)
 	LogfWithDepth(LOG_LEVEL_ERROR, 1, "%v,%v", a, i)
 }

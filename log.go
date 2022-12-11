@@ -97,7 +97,7 @@ func LogfWithDepth(
 }
 
 func Logf(level int64, format string, args ...interface{}) {
-	LogfWithDepth(LOG_LEVEL_CRITICAL, LOG_DEPTH_DEFAULT, format, args...)
+	LogfWithDepth(level, LOG_DEPTH_DEFAULT, format, args...)
 }
 
 func logPrint(s string) {
